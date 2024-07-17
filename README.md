@@ -1,1 +1,1 @@
-Stock price prediction with tensorflow(lstm), pandas, numpy
+Stock price prediction with tensorflow(lstm), pandas, numpy and matplotlib for visualition
