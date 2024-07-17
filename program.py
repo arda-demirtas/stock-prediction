@@ -27,11 +27,15 @@ while True:
         fileName = input("Enter a name for model : ")
         end = datetime.date.today()
         start = end - relativedelta(years=years)
-        data = yf.download(symbol, start=str(start), end=str(end))
-        data = data.filter(['Close'])
-        model = LstmModel(data, symbol)
-        model.buildModel()
-        model.saveModel(fileName)
+        try:
+            data = yf.download(symbol, start=str(start), end=str(end))
+            data = data.filter(['Close'])
+            model = LstmModel(data, symbol)
+            model.buildModel()
+            model.saveModel(fileName)
+        except:
+            print("Error. Check the symbol")
+
 
     if a == 2:
         fileName = input("Enter the model name : ")
