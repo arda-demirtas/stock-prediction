@@ -1,10 +1,15 @@
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 import pandas as pd
 import numpy as np
+import warnings
+warnings.simplefilter('ignore')
 import yfinance as yf
 from model import LstmModel
 import datetime
 from dateutil.relativedelta import relativedelta
 import pickle
+import tensorflow as tf
 
 
 while True:
@@ -48,7 +53,6 @@ while True:
                 loadedModel.drawGraph()
             if opt == 2:
                 loadedModel.drawModelGraph()
-
             if opt == 3:
                 print(loadedModel.futurePredictions(10))
             if opt == 4:

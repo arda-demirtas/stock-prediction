@@ -5,8 +5,10 @@ from sklearn.preprocessing import MinMaxScaler
 import math
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+import tensorflow as tf
 import pickle
 from datetime import timedelta, date, datetime
+
 
 class LstmModel:
     def __init__(self, data : pd.DataFrame, symbol : str):
