@@ -52,7 +52,8 @@ while True:
         print("Type 1 to draw price history graph")
         print("Type 2 to draw graph with test prediction")
         print("Type 3 to see future predictions")
-        print("Type 4 to exit to menu")
+        print("Type 4 to see RMSE")
+        print("Type 5 to exit to menu")
         while True:
             opt = int(input("Enter a number : "))
             if opt == 1:
@@ -62,6 +63,9 @@ while True:
             if opt == 3:
                 print(loadedModel.futurePredictions(10))
             if opt == 4:
+                print("RMSE : " + str(loadedModel.rmse()))
+            if opt == 5:
                 break
+            
     if a == 3:
         exit()

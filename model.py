@@ -66,6 +66,9 @@ class LstmModel:
     
     def getdata(self):
         return self.__data
+    
+    def getModel(self):
+        return self.__model
 
     def buildModel(self):
         self.__model.add(LSTM(50, return_sequences = True, input_shape = (self.__xtrain.shape[1], 1)))
@@ -81,8 +84,8 @@ class LstmModel:
     def predict(self, data):
         return self.__model.predict(data)
     
-    def rmse(self, prediction, real):
-        return np.sqrt(np.mean(prediction - real) ** 2)
+    def rmse(self):
+        return np.sqrt(np.mean(self.inverse(self.predict(self.__xtest)) - self.__ytest) ** 2)
 
     def drawGraph(self):
         plt.style.use("fivethirtyeight")
