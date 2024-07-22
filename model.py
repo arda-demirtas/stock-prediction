@@ -73,7 +73,7 @@ class LstmModel:
         self.__model.add(Dense(25))
         self.__model.add(Dense(1))
         self.__model.compile(optimizer = "adam", loss="mean_squared_error")
-        self.__model.fit(self.__xtrain, self.__ytrain, epochs = 1, batch_size = 1)
+        self.__model.fit(self.__xtrain, self.__ytrain, epochs = 100, batch_size = 32, verbose = 1)
 
     def inverse(self, data):
         return self.__scaler.inverse_transform(data)

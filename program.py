@@ -39,12 +39,14 @@ while True:
 
     if a == 2:
         fileName = input("Enter the model name : ")
-        try:
-            with open(f"{fileName}.pickle", "rb") as file:
-                loadedModel = pickle.load(file)
-        except:
-            print("Error.")
+        with open(f"{fileName}.pickle", "rb") as file:
+            loadedModel = pickle.load(file)
+
+        if loadedModel:
             pass
+        else:
+            print("Error.")
+            exit()
 
         print(f"***SELECTED MODEL : {fileName}***")
         print("Type 1 to draw price history graph")
