@@ -127,7 +127,7 @@ class LstmModel:
             lastTest[0, -1] = nextDay
             dates.append(str(today + i * timedelta(days=1)))
         dates = np.array(dates)
-        dates = np.reshape(dates, (10, 1))
+        dates = np.reshape(dates, (days, 1))
         nextDaysList = self.inverse(np.array(nextDaysList).reshape(-1, 1))
         df_vertical = pd.DataFrame(np.hstack((dates, nextDaysList)), columns=['Date', 'Prediction'])
         df_vertical = df_vertical.set_index('Date')

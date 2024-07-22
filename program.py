@@ -11,6 +11,12 @@ from dateutil.relativedelta import relativedelta
 import pickle
 import tensorflow as tf
 
+def loadModel(fileName):
+    with open(f"{fileName}.pickle", "rb") as file:
+        loadedModel = pickle.load(file)
+
+    return loadedModel
+
 
 while True:
 
@@ -39,8 +45,7 @@ while True:
 
     if a == 2:
         fileName = input("Enter the model name : ")
-        with open(f"{fileName}.pickle", "rb") as file:
-            loadedModel = pickle.load(file)
+        loadedModel = loadModel(fileName)
 
         if loadedModel:
             pass
@@ -61,7 +66,7 @@ while True:
             if opt == 2:
                 loadedModel.drawModelGraph()
             if opt == 3:
-                print(loadedModel.futurePredictions(10))
+                print(loadedModel.futurePredictions(180))
             if opt == 4:
                 print("RMSE : " + str(loadedModel.rmse()))
             if opt == 5:
