@@ -25,6 +25,7 @@ class LstmModel:
         self.__xtest = []
         self.__ytest = []
         self.__model = Sequential()
+        self.__saveDate : date
 
         for i in range(60, len(self.__trainData)):
             self.__xtrain.append(self.__trainData[i - 60 : i, 0])
@@ -111,6 +112,7 @@ class LstmModel:
         plt.show()
 
     def saveModel(self, fileName):
+        self.__saveDate = date.today()
         with open(f"{fileName}.pickle", 'wb') as file:
             pickle.dump(self, file)
 
@@ -119,13 +121,13 @@ class LstmModel:
         lastTest = np.reshape(lastTest, (1, 60, 1))
         nextDaysList = []
         dates = []
-        today = date.today()
+        saveDate = self.__saveDate
         for i in range(days):
             nextDay = self.predict(lastTest)
             nextDaysList.append(nextDay[0, 0])
             lastTest = np.roll(lastTest, -1, axis=1)
             lastTest[0, -1] = nextDay
-            dates.append(str(today + i * timedelta(days=1)))
+            dates.append(str(saveDate + i * timedelta(days=1)))
         dates = np.array(dates)
         dates = np.reshape(dates, (days, 1))
         nextDaysList = self.inverse(np.array(nextDaysList).reshape(-1, 1))
@@ -133,6 +135,7 @@ class LstmModel:
         df_vertical = df_vertical.set_index('Date')
         df_vertical.index = df_vertical.index.astype("datetime64[ns]")
         df_vertical['Prediction'] = df_vertical['Prediction'].astype('Float64')
+        print(df_vertical)
         plt.style.use("fivethirtyeight")
         plt.figure(figsize=(16, 8))
         plt.title("Model")

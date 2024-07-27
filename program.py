@@ -66,7 +66,7 @@ while True:
             if opt == 2:
                 loadedModel.drawModelGraph()
             if opt == 3:
-                print(loadedModel.futurePredictions(180))
+                loadedModel.futurePredictions(10)
             if opt == 4:
                 print("RMSE : " + str(loadedModel.rmse()))
             if opt == 5:
