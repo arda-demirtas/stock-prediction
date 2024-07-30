@@ -4,14 +4,15 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 import math
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import LSTM, Dense, Dropout
 import tensorflow as tf
 import pickle
 from datetime import timedelta, date, datetime
 
 
 class LstmModel:
-    def __init__(self, data : pd.DataFrame, symbol : str):
+    def __init__(self, data : pd.DataFrame, symbol : str, interval):
+        self.__interval = interval
         self.__data = data
         self.__symbol = symbol
         self.__scaler = MinMaxScaler(feature_range=(0, 1))
@@ -73,7 +74,9 @@ class LstmModel:
 
     def buildModel(self):
         self.__model.add(LSTM(50, return_sequences = True, input_shape = (self.__xtrain.shape[1], 1)))
+        self.__model.add(Dropout(0.2))
         self.__model.add(LSTM(50, return_sequences = False))
+        self.__model.add(Dropout(0.2))
         self.__model.add(Dense(25))
         self.__model.add(Dense(1))
         self.__model.compile(optimizer = "adam", loss="mean_squared_error")
@@ -112,26 +115,37 @@ class LstmModel:
         plt.show()
 
     def saveModel(self, fileName):
-        self.__saveDate = date.today()
+        self.__saveDate = datetime.today()
         with open(f"{fileName}.pickle", 'wb') as file:
             pickle.dump(self, file)
 
-    def futurePredictions(self, days):
+    def futurePredictions(self, numberOfNextPredictions):
         lastTest = self.__xtest[-1]
         lastTest = np.reshape(lastTest, (1, 60, 1))
-        nextDaysList = []
+        nextPredictionList = []
         dates = []
         saveDate = self.__saveDate
-        for i in range(days):
-            nextDay = self.predict(lastTest)
-            nextDaysList.append(nextDay[0, 0])
+        
+        match self.__interval[1]:
+            case 'h':
+                td = timedelta(hours=int(self.__interval[0]))
+            case 'm':
+                td = timedelta(minutes=int(self.__interval[0]))
+            case 'd':
+                td = timedelta(days=int(self.__interval[0]))
+            
+            
+        for i in range(numberOfNextPredictions):
+            nextPrediction = self.predict(lastTest)
+            nextPredictionList.append(nextPrediction[0, 0])
             lastTest = np.roll(lastTest, -1, axis=1)
-            lastTest[0, -1] = nextDay
-            dates.append(str(saveDate + i * timedelta(days=1)))
+            lastTest[0, -1] = nextPrediction
+                
+            dates.append(str(saveDate + i * td))
         dates = np.array(dates)
-        dates = np.reshape(dates, (days, 1))
-        nextDaysList = self.inverse(np.array(nextDaysList).reshape(-1, 1))
-        df_vertical = pd.DataFrame(np.hstack((dates, nextDaysList)), columns=['Date', 'Prediction'])
+        dates = np.reshape(dates, (numberOfNextPredictions, 1))
+        nextPredictionList = self.inverse(np.array(nextPredictionList).reshape(-1, 1))
+        df_vertical = pd.DataFrame(np.hstack((dates, nextPredictionList)), columns=['Date', 'Prediction'])
         df_vertical = df_vertical.set_index('Date')
         df_vertical.index = df_vertical.index.astype("datetime64[ns]")
         df_vertical['Prediction'] = df_vertical['Prediction'].astype('Float64')
@@ -144,7 +158,6 @@ class LstmModel:
         plt.plot(df_vertical['Prediction'])
         plt.show()
 
-        return nextDaysList
 
 
 

@@ -29,14 +29,15 @@ while True:
     a = int(input("Enter a number : "))
     if a == 1:
         symbol = input("enter a symbol(EX:AAPL) : ")
-        years = int(input("enter time period in years(EX:5) : "))
+        months = int(input("enter time period in months(EX:5) : "))
+        interval = input("Enter the inverval(EX: 1h, 1d, 1m...)")
         fileName = input("Enter a name for model : ")
         end = datetime.date.today()
-        start = end - relativedelta(years=years)
+        start = end - relativedelta(months=months)
         try:
-            data = yf.download(symbol, start=str(start), end=str(end))
+            data = yf.download(symbol, start=str(start), end=str(end), interval=interval)
             data = data.filter(['Close'])
-            model = LstmModel(data, symbol)
+            model = LstmModel(data, symbol, interval)
             model.buildModel()
             model.saveModel(fileName)
         except:
