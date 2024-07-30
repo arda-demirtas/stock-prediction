@@ -29,19 +29,18 @@ while True:
     a = int(input("Enter a number : "))
     if a == 1:
         symbol = input("enter a symbol(EX:AAPL) : ")
-        months = int(input("enter time period in months(EX:5) : "))
-        interval = input("Enter the inverval(EX: 1h, 1d, 1m...)")
+        months = int(input("enter time period in months(EX:48) : "))
         fileName = input("Enter a name for model : ")
         end = datetime.date.today()
         start = end - relativedelta(months=months)
-        try:
-            data = yf.download(symbol, start=str(start), end=str(end), interval=interval)
-            data = data.filter(['Close'])
-            model = LstmModel(data, symbol, interval)
-            model.buildModel()
-            model.saveModel(fileName)
-        except:
-            print("Error. Check the symbol")
+        #try:
+        data = yf.download(symbol, start=str(start), end=str(end), interval="1d")
+        data = data[['Open', 'High', 'Low', 'Volume', 'Close']]
+        model = LstmModel(data, symbol, "1d")
+        model.buildModel()
+        model.saveModel(fileName)
+        #except:
+        print("Error. Check the symbol")
 
 
     if a == 2:
@@ -67,7 +66,7 @@ while True:
             if opt == 2:
                 loadedModel.drawModelGraph()
             if opt == 3:
-                loadedModel.futurePredictions(10)
+                loadedModel.futurePredictions()
             if opt == 4:
                 print("RMSE : " + str(loadedModel.rmse()))
             if opt == 5:
