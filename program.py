@@ -33,14 +33,11 @@ while True:
         fileName = input("Enter a name for model : ")
         end = datetime.date.today()
         start = end - relativedelta(months=months)
-        #try:
         data = yf.download(symbol, start=str(start), end=str(end), interval="1d")
         data = data[['Open', 'High', 'Low', 'Volume', 'Close']]
         model = LstmModel(data, symbol, "1d")
         model.buildModel()
         model.saveModel(fileName)
-        #except:
-        print("Error. Check the symbol")
 
 
     if a == 2:
